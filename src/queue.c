@@ -19,7 +19,7 @@ int queueInit(QUEUE* pstQueue, int iMaxCount) {
 /**
  * @brief 큐 해제
  */
-void queueDeinit(QUEUE* pstQueue) {
+void queueDestroy(QUEUE* pstQueue) {
     void* pvData;
     while (!queueIsEmpty(pstQueue)) {
         queuePop(pstQueue, &pvData);

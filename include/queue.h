@@ -7,6 +7,7 @@
  */
 typedef struct queue_node {
     void* pvData;                    /**< 사용자 데이터 포인터 */
+    int iDataSize;
     struct queue_node* next;      /**< 다음 노드를 가리키는 포인터 */
 } QUEUE_NODE;
 
@@ -34,7 +35,7 @@ int queueInit(QUEUE* pstQueue, int iMaxCount);
  * @brief 큐 해제 및 리소스 정리
  * @param pstQueue 큐 포인터
  */
-void queueDeinit(QUEUE* pstQueue);
+void queueDestroy(QUEUE* pstQueue);
 
 /**
  * @brief 큐에 데이터 삽입
