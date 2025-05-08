@@ -43,7 +43,7 @@ void queueDestroy(QUEUE* pstQueue);
  * @param pvData 삽입할 데이터 포인터
  * @return 1 성공, 0 실패
  */
-int queuePush(QUEUE* pstQueue, void* pvData);
+int queuePush(QUEUE* pstQueue, void* pvData, int iDataSize);
 
 /**
  * @brief 큐에서 데이터 제거 및 반환

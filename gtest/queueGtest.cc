@@ -13,18 +13,18 @@ TEST(QueueTest, BasicPushPopTest) {
     queueInit(&q, 5);
 
     int a = 10, b = 20;
-    EXPECT_TRUE(queuePush(&q, &a));
-    EXPECT_TRUE(queuePush(&q, &b));
+    EXPECT_TRUE(queuePush(&q, &a, 4));
+    EXPECT_TRUE(queuePush(&q, &b, 4));
 
     void* data = nullptr;
-    EXPECT_TRUE(queuePop(&q, &data));
+    EXPECT_EQ(queuePop(&q, &data), 4);
     EXPECT_EQ(*(int*)data, 10);
 
-    EXPECT_TRUE(queuePop(&q, &data));
+    EXPECT_EQ(queuePop(&q, &data), 4);
     EXPECT_EQ(*(int*)data, 20);
 
     EXPECT_TRUE(queueIsEmpty(&q));
-    queueDeinit(&q);
+    queueDestroy(&q);
 }
 
 /**
@@ -35,11 +35,11 @@ TEST(QueueTest, QueueFullTest) {
     queueInit(&q, 2);
 
     int a = 1, b = 2, c = 3;
-    EXPECT_TRUE(queuePush(&q, &a));
-    EXPECT_TRUE(queuePush(&q, &b));
-    EXPECT_FALSE(queuePush(&q, &c));  // 최대 용량 초과
+    EXPECT_TRUE(queuePush(&q, &a, 4));
+    EXPECT_TRUE(queuePush(&q, &b, 4));
+    EXPECT_FALSE(queuePush(&q, &c, 4));  // 최대 용량 초과
 
-    queueDeinit(&q);
+    queueDestroy(&q);
 }
 
 #define MAX_QUEUE_SIZE 50
@@ -50,7 +50,7 @@ static int test_values[MAX_QUEUE_SIZE];
 void* producer_fn(void* arg) {
     QUEUE* pstQueue = (QUEUE*)arg;
     for (int i = 0; i < MAX_QUEUE_SIZE; ++i) {
-        EXPECT_TRUE(queuePush(pstQueue, &test_values[i]));
+        EXPECT_TRUE(queuePush(pstQueue, &test_values[i], 4));
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return nullptr;
@@ -59,10 +59,14 @@ void* producer_fn(void* arg) {
 // 소비자 쓰레드 함수
 void* consumer_fn(void* arg) {
     QUEUE* pstQueue = (QUEUE*)arg;
-    for (int i = 0; i < MAX_QUEUE_SIZE; ++i) {
-        void* data = nullptr;
-        EXPECT_TRUE(queuePop(pstQueue, &data));
-        EXPECT_EQ(*(int*)data, i);
+    for (int i = 0; i < MAX_QUEUE_SIZE; ) {
+        if(!queueIsEmpty(pstQueue)){
+            void* data = nullptr;
+            EXPECT_EQ(queuePop(pstQueue, &data), 4);
+            EXPECT_EQ(*(int*)data, i);
+            ++i;
+        }
+        std::this_thread::sleep_for(std::chrono::microseconds(300));
     }
     return nullptr;
 }
@@ -84,7 +88,7 @@ TEST(QueueTest, ThreadSeparatedPushPop) {
     pthread_join(producer_thread, NULL);
     pthread_join(consumer_thread, NULL);
 
-    queueDeinit(&q);
+    queueDestroy(&q);
 }
 
 int main(int argc, char **argv) {

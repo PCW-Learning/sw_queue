@@ -32,7 +32,7 @@ void queueDestroy(QUEUE* pstQueue) {
 /**
  * @brief 큐에 데이터 삽입
  */
-int queuePush(QUEUE* pstQueue, void* pvData) {
+int queuePush(QUEUE* pstQueue, void* pvData, int iDataSize) {
     pthread_mutex_lock(&pstQueue->mutex);
 
     if (queueIsFull(pstQueue)) {
@@ -47,6 +47,7 @@ int queuePush(QUEUE* pstQueue, void* pvData) {
     }
 
     pstNewNode->pvData = pvData;
+    pstNewNode->iDataSize = iDataSize;
     pstNewNode->next = NULL;
 
     if (pstQueue->rear) {
@@ -67,25 +68,24 @@ int queuePush(QUEUE* pstQueue, void* pvData) {
  * @brief 큐에서 데이터 제거
  */
 int queuePop(QUEUE* pstQueue, void** pvData) {
+    int iDataSize = 0;
     pthread_mutex_lock(&pstQueue->mutex);
 
-    while (queueIsEmpty(pstQueue)) {
-        pthread_cond_wait(&pstQueue->cond, &pstQueue->mutex);
+    if (!queueIsEmpty(pstQueue)) {
+        QUEUE_NODE* pstQueueNode = pstQueue->front;
+        *pvData = pstQueueNode->pvData;
+
+        pstQueue->front = pstQueueNode->next;
+        if (!pstQueue->front) {
+            pstQueue->rear = NULL;
+        }
+
+        pstQueue->iCount--;
+        iDataSize = pstQueueNode->iDataSize;
+        free(pstQueueNode);
     }
-
-    QUEUE_NODE* pstQueueNode = pstQueue->front;
-    *pvData = pstQueueNode->pvData;
-
-    pstQueue->front = pstQueueNode->next;
-    if (!pstQueue->front) {
-        pstQueue->rear = NULL;
-    }
-
-    pstQueue->iCount--;
-    free(pstQueueNode);
-
     pthread_mutex_unlock(&pstQueue->mutex);
-    return 1;
+    return iDataSize;
 }
 
 /**
