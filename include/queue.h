@@ -1,6 +1,10 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <pthread.h>
 /**
  * @brief 큐 노드 구조체
@@ -73,4 +77,9 @@ int queueIsFull(QUEUE* pstQueue);
  * @return 데이터 개수
  */
 int queueSize(QUEUE* pstQueue);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // QUEUE_H

@@ -22,7 +22,7 @@ FOR_GTEST_OBJS = $(patsubst %.c, %_gtest.o, $(FOR_GTEST_SRCS))
 MY_GTEST_DIR = gtest
 MY_GTEST_SRCS = $(MY_GTEST_DIR)/queueGtest.cc
 MY_GTEST_OBJS = $(patsubst %.cc, %.o, $(MY_GTEST_SRCS))
-GTEST_TARGET = gTestbench
+GTEST_TARGET = queue-gtest
 
 # 변수 정의
 CC = gcc
