@@ -1,6 +1,6 @@
 /**
  * @file queue.c
- * @brief 쓰레드 안전 큐 (Thread-safe Queue) 구현 파일
+ * @brief 쓰레드 안전 큐 (Thread-safe Queue) 구현
  *
  * 이 파일은 동기화된 큐 자료구조의 구현을 포함합니다.
  * 각 큐는 앞(front)과 뒤(rear) 포인터로 연결된 노드 리스트를 유지하며,
