@@ -1,3 +1,25 @@
+/**
+ * @file queue.c
+ * @brief 쓰레드 안전 큐 (Thread-safe Queue) 구현 파일
+ *
+ * 이 파일은 동기화된 큐 자료구조의 구현을 포함합니다.
+ * 각 큐는 앞(front)과 뒤(rear) 포인터로 연결된 노드 리스트를 유지하며,
+ * 데이터를 FIFO 방식으로 저장/삭제할 수 있습니다.
+ *
+ * 멀티 쓰레드 환경에서 안전하게 사용될 수 있도록 `pthread_mutex`를 이용한 동기화를 제공합니다.
+ *
+ * 주요 기능:
+ * - queueInit(): 큐 초기화
+ * - queuePush(): 데이터 삽입
+ * - queuePop(): 데이터 제거 및 반환
+ * - queueIsEmpty(): 큐가 비었는지 확인
+ * - queueReset(): 큐의 모든 데이터를 제거
+ * - queueDestroy(): 큐 해제 및 뮤텍스 제거
+ *
+ * @author 박철우
+ * @date 2025-05
+ */
+
 #include "queue.h"
 #include <stdlib.h>
 
