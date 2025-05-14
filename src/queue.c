@@ -11,8 +11,6 @@ int queueInit(QUEUE* pstQueue, int iMaxCount) {
     pstQueue->iMaxCount = iMaxCount;
 
     pthread_mutex_init(&pstQueue->mutex, NULL);
-    pthread_cond_init(&pstQueue->cond, NULL);
-
     return 0;
 }
 
@@ -26,7 +24,6 @@ void queueDestroy(QUEUE* pstQueue) {
     }
 
     pthread_mutex_destroy(&pstQueue->mutex);
-    pthread_cond_destroy(&pstQueue->cond);
 }
 
 /**
@@ -59,7 +56,6 @@ int queuePush(QUEUE* pstQueue, void* pvData, int iDataSize) {
     pstQueue->rear = pstNewNode;
     pstQueue->iCount++;
 
-    pthread_cond_signal(&pstQueue->cond);
     pthread_mutex_unlock(&pstQueue->mutex);
     return 1;
 }

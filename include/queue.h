@@ -10,21 +10,20 @@ extern "C" {
  * @brief 큐 노드 구조체
  */
 typedef struct queue_node {
-    void* pvData;                    /**< 사용자 데이터 포인터 */
-    int iDataSize;
-    struct queue_node* next;      /**< 다음 노드를 가리키는 포인터 */
+    void* pvData;               /**< 사용자 데이터 포인터 */
+    int iDataSize;              /** 큐에 저장된 데이터 크기 */
+    struct queue_node* next;    /**< 다음 노드를 가리키는 포인터 */
 } QUEUE_NODE;
 
 /**
  * @brief 큐 구조체
  */
 typedef struct {
-    QUEUE_NODE* front;            /**< 큐의 프론트 노드 포인터 */
-    QUEUE_NODE* rear;             /**< 큐의 리어 노드 포인터 */
-    int iCount;                   /**< 현재 큐에 저장된 항목 수 */
-    int iMaxCount;                /**< 큐 최대 크기 */
-    pthread_mutex_t mutex;       /**< 큐 보호용 뮤텍스 */
-    pthread_cond_t cond;         /**< 조건 변수 (데이터 대기) */
+    QUEUE_NODE* front;          /**< 큐의 프론트 노드 포인터 */
+    QUEUE_NODE* rear;           /**< 큐의 리어 노드 포인터 */
+    int iCount;                 /**< 현재 큐에 저장된 항목 수 */
+    int iMaxCount;              /**< 큐 최대 크기 */
+    pthread_mutex_t mutex;      /**< 큐 보호용 뮤텍스 */
 } QUEUE;
 
 /**
@@ -45,6 +44,7 @@ void queueDestroy(QUEUE* pstQueue);
  * @brief 큐에 데이터 삽입
  * @param pstQueue 큐 포인터
  * @param pvData 삽입할 데이터 포인터
+ * @param iDataSize 삽입할 데이터 사이즈
  * @return 1 성공, 0 실패
  */
 int queuePush(QUEUE* pstQueue, void* pvData, int iDataSize);
@@ -53,7 +53,7 @@ int queuePush(QUEUE* pstQueue, void* pvData, int iDataSize);
  * @brief 큐에서 데이터 제거 및 반환
  * @param pstQueue 큐 포인터
  * @param pvData 제거된 데이터 포인터 주소
- * @return 1 성공, 0 실패
+ * @return 성공:데이터 사이즈 반환, 0 실패
  */
 int queuePop(QUEUE* pstQueue, void** pvData);
 
