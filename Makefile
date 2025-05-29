@@ -30,8 +30,22 @@ CXX = g++
 GTEST_CFLAGS = -Wall -g -I$(INCLUDE_DIR) -I$(GTEST_INCLUDE_DIR) -std=c++11
 GTEST_LDFLAGS = -L$(GTEST_LIB_DIR) -lgtest -lgtest_main -lpthread
 
+# 라이브러리 파일명
+TARGET_LIB = libqueue.so.1.0.0
+SONAME = libqueue.so.1
+LINKNAME = libqueue.so
+
 # 기본 타겟
-all: $(QUEUE_OBJS) 
+all: $(TARGET_LIB) symlinks
+
+# 공유 라이브러리 생성
+$(TARGET_LIB): $(QUEUE_OBJS)
+	$(CC) -shared $(LDFLAGS) -Wl,-soname,$(SONAME) -o $@ $^
+
+# 심볼릭 링크 생성
+symlinks:
+	ln -sf $(TARGET_LIB) $(SONAME)
+	ln -sf $(SONAME) $(LINKNAME)	
 
 # 구글테스트 빌드 및 실행
 gtest: $(MY_GTEST_OBJS) $(FOR_GTEST_OBJS)
@@ -59,4 +73,6 @@ desktop: $(QUEUE_SRCS)
 # clean 타겟: 빌드 파일 정리
 .PHONY: clean
 clean:
-	rm -f $(QUEUE_OBJS) $(FOR_GTEST_OBJS) $(MY_GTEST_OBJS) $(GTEST_TARGET) $(DESKTOP_TARGET_LIB)
+	rm -f 	$(QUEUE_OBJS) $(TARGET_LIB) $(SONAME) $(LINKNAME) \
+			$(FOR_GTEST_OBJS) $(MY_GTEST_OBJS) $(GTEST_TARGET) \
+			$(DESKTOP_TARGET_LIB)
